@@ -68,10 +68,10 @@ void OpenglESHelper::readShaderString(char* &shaderString, const char* shaderNam
 }
 
 GraphicsTexture* OpenglESHelper::getGraphicsTexture(const char* pPath) {
-// 	if (pPath != NULL) {
-// 		GraphicsTexture* graphicsTexture = new GraphicsTexture(assetManager, pPath);
-// 		return graphicsTexture;
-// 	}
+	if (pPath != NULL) {
+		GraphicsTexture* graphicsTexture = new GraphicsTexture(pPath);
+		return graphicsTexture;
+	}
 	return NULL;
 }
 
