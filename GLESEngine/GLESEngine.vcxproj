@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{229673D8-207B-439E-ABE0-64CD72F6E95B}</ProjectGuid>
+    <RootNamespace>GLESEngine</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>E:\visual studio 2012\Projects\GLESEngine\GLESEngine;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libEGL.lib;libGLESv2.lib;pthreadVC2.lib;esUtil.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="AnimationRunner.cpp" />
+    <ClCompile Include="BaseAnimation.cpp" />
+    <ClCompile Include="BaseObject.cpp" />
+    <ClCompile Include="Bezier.cpp" />
+    <ClCompile Include="ComOGLESProgram.cpp" />
+    <ClCompile Include="ComplexAnimation.cpp" />
+    <ClCompile Include="com_cwq_jni_JNILib.cpp" />
+    <ClCompile Include="CurveGraph.cpp" />
+    <ClCompile Include="CutRectangle.cpp" />
+    <ClCompile Include="Ellipse.cpp" />
+    <ClCompile Include="FadeAnimation.cpp" />
+    <ClCompile Include="Function.cpp" />
+    <ClCompile Include="GraphicsTexture.cpp" />
+    <ClCompile Include="GraphObject.cpp" />
+    <ClCompile Include="Line.cpp" />
+    <ClCompile Include="LinearGraph.cpp" />
+    <ClCompile Include="lodepng.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MoveAnimation.cpp" />
+    <ClCompile Include="MultiObject.cpp" />
+    <ClCompile Include="OpenglESHelper.cpp" />
+    <ClCompile Include="OpenglESProgram.cpp" />
+    <ClCompile Include="Polygon.cpp" />
+    <ClCompile Include="RectangleTexture.cpp" />
+    <ClCompile Include="Resource.cpp" />
+    <ClCompile Include="RotateAnimation.cpp" />
+    <ClCompile Include="ScaleAnimation.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="TextureObject.cpp" />
+    <ClCompile Include="ThreadLock.cpp" />
+    <ClCompile Include="TintAnimation.cpp" />
+    <ClCompile Include="TriangulatePolygon.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AnimationRunner.h" />
+    <ClInclude Include="BaseAnimation.h" />
+    <ClInclude Include="BaseObject.h" />
+    <ClInclude Include="Bezier.h" />
+    <ClInclude Include="ComOGLESProgram.h" />
+    <ClInclude Include="ComplexAnimation.h" />
+    <ClInclude Include="com_cwq_jni_JNILib.h" />
+    <ClInclude Include="CurveGraph.h" />
+    <ClInclude Include="CutRectangle.h" />
+    <ClInclude Include="Ellipse.h" />
+    <ClInclude Include="FadeAnimation.h" />
+    <ClInclude Include="Function.h" />
+    <ClInclude Include="GraphicsTexture.h" />
+    <ClInclude Include="GraphObject.h" />
+    <ClInclude Include="Line.h" />
+    <ClInclude Include="LinearGraph.h" />
+    <ClInclude Include="lodepng.h" />
+    <ClInclude Include="LogHelper.h" />
+    <ClInclude Include="MoveAnimation.h" />
+    <ClInclude Include="MultiObject.h" />
+    <ClInclude Include="OpenglESHelper.h" />
+    <ClInclude Include="OpenglESProgram.h" />
+    <ClInclude Include="Point.h" />
+    <ClInclude Include="Polygon.h" />
+    <ClInclude Include="RectangleTexture.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="RotateAnimation.h" />
+    <ClInclude Include="ScaleAnimation.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="TextureObject.h" />
+    <ClInclude Include="ThreadLock.h" />
+    <ClInclude Include="TintAnimation.h" />
+    <ClInclude Include="TriangulatePolygon.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
