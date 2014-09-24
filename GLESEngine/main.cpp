@@ -1,7 +1,8 @@
 #include <iostream>
+#include <esUtil.h>
 #include "Scene.h"
 #include "Line.h"
-#include <esUtil.h>
+#include "RectangleTexture.h"
 
 Scene* scene = NULL;
 
@@ -19,7 +20,7 @@ int main() {
 	esCreateWindow(&esContext, "hello", 1024, 768, ES_WINDOW_RGB);
 
 	scene = new Scene();
-	BaseObject* temp = new Line(Point(-0.8f, 0.8f), Point(0.8f, -1));
+	BaseObject* temp = new RectangleTexture("tou.png");
 	scene->addObj(temp);
 
 	scene->onSurfaceChanged(1024, 768);

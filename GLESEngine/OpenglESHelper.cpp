@@ -83,7 +83,7 @@ int OpenglESHelper::createTexture(const char* pPath) {
 		texture = graphicsTexture->getTextureId();
 		delete graphicsTexture;
 	}
-	LOGI(" %i texture", texture);
+	LOGI(" %s %i texture", pPath, texture);
 	return texture;
 }
 

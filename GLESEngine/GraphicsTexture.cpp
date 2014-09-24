@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "GraphicsTexture.h"
 #include "LogHelper.h"
@@ -22,132 +23,153 @@ int32_t GraphicsTexture::getWidth() {
 }
 
 bool GraphicsTexture::loadWidthHeight() {
+	FILE *fp;  
+	png_structp png_ptr;  
+	png_infop info_ptr;  
+	png_bytep* row_pointers;  
+	const int PNG_BYTES_TO_CHECK = 8;
+	char buf[PNG_BYTES_TO_CHECK];  
+	int temp;  
+
+	fp = fopen( path, "rb" );  
+	if( fp == NULL ) {   
+		LOGE("%s no exit", path);
+		return false/* 你的返回值 */;  
+	}  
+
+	png_ptr = png_create_read_struct( PNG_LIBPNG_VER_STRING, 0, 0, 0 );  
+	info_ptr = png_create_info_struct( png_ptr );  
+
+	setjmp( png_jmpbuf(png_ptr) );   
+	/* 读取PNG_BYTES_TO_CHECK个字节的数据 */  
+	temp = fread( buf, 1, PNG_BYTES_TO_CHECK, fp );  
+	/* 若读到的数据并没有PNG_BYTES_TO_CHECK个字节 */  
+	if( temp < PNG_BYTES_TO_CHECK ) {  
+		fclose(fp);  
+		png_destroy_read_struct( &png_ptr, &info_ptr, 0);  
+		return false/* 你的返回值 */;  
+	}  
+	/* 检测数据是否为PNG的签名 */  
+	temp = png_sig_cmp( (png_bytep)buf, (png_size_t)0, PNG_BYTES_TO_CHECK );  
+	/* 如果不是PNG的签名，则说明该文件不是PNG文件 */  
+	if( temp != 0 ) {  
+		fclose(fp);  
+		png_destroy_read_struct( &png_ptr, &info_ptr, 0);  
+		return false/* 你的返回值 */;  
+	}  
+
+	/* 复位文件指针 */  
+	rewind( fp );  
+	/* 开始读文件 */  
+	png_init_io( png_ptr, fp );   
+	/* 读取PNG图片信息 */  
+	png_read_png( png_ptr, info_ptr, PNG_TRANSFORM_EXPAND, 0 );  
+	/* 获取图像的宽高 */  
+	mWidth = png_get_image_width( png_ptr, info_ptr );  
+	mHeight = png_get_image_height( png_ptr, info_ptr );
+	png_destroy_read_struct( &png_ptr, &info_ptr, 0); 
 	return true;
-// 	png_byte lHeader[8];
-// 	png_structp lPngPtr = NULL;
-// 	png_infop lInfoPtr = NULL;
-// 
-// 	if (mResource.open() != 1) goto ERROR;
-// 	if (mResource.read(lHeader, sizeof(lHeader)) != 1)
-// 		goto ERROR;
-// 	if (png_sig_cmp(lHeader, 0, 8) != 0) goto ERROR;
-// 	lPngPtr = png_create_read_struct(PNG_LIBPNG_VER_STRING,
-// 		NULL, NULL, NULL);
-// 	if (!lPngPtr) goto ERROR;
-// 	lInfoPtr = png_create_info_struct(lPngPtr);
-// 	if (!lInfoPtr) goto ERROR;
-// 	png_set_read_fn(lPngPtr, &mResource, callback_read);
-// 	if (setjmp(png_jmpbuf(lPngPtr))) goto ERROR;
-// 	png_set_sig_bytes(lPngPtr, 8);
-// 	png_read_info(lPngPtr, lInfoPtr);
-// 	png_int_32 lDepth, lColorType;
-// 	png_uint_32 lWidth, lHeight;
-// 	png_get_IHDR(lPngPtr, lInfoPtr, &lWidth, &lHeight,
-// 		&lDepth, &lColorType, NULL, NULL, NULL);
-// 	mWidth = lWidth; mHeight = lHeight;
-// 	mResource.close();
-// 	png_destroy_read_struct(&lPngPtr, &lInfoPtr, NULL);
-// 	return true;
-// 
-// 	ERROR:
-// 		mResource.close();
-// 		if (lPngPtr != NULL) {
-// 			png_infop* lInfoPtrP = lInfoPtr != NULL ? &lInfoPtr : NULL;
-// 			png_destroy_read_struct(&lPngPtr, lInfoPtrP, NULL);
-// 		}
-// 		return false;
 }
 
 uint8_t* GraphicsTexture::loadImage() {
-	png_byte lHeader[8];
-	png_structp lPngPtr = NULL;
-	png_infop lInfoPtr = NULL;
-	png_byte* lImageBuffer = NULL;
-	png_bytep* lRowPtrs = NULL;
-	png_int_32 lRowSize;
-	bool lTransparency;
+	char png_header[8];
+    png_structp png_ptr;
+    png_infop info_ptr;
+    png_byte color_type; 
+    png_byte bit_depth;
+    png_colorp palette; 
 
-	FILE *file = fopen(path, "rb");
-	fread(lHeader, 1, 8, file);
-	if (png_sig_cmp(lHeader, 0, 8) != 0) goto ERROR;
-	lPngPtr = png_create_read_struct(PNG_LIBPNG_VER_STRING,
-		NULL, NULL, NULL);
-	if (!lPngPtr) goto ERROR;
-	lInfoPtr = png_create_info_struct(lPngPtr);
-	if (!lInfoPtr) goto ERROR;
-	if (setjmp(png_jmpbuf(lPngPtr))) goto ERROR;
-	png_init_io(lPngPtr, file);
-	png_set_sig_bytes(lPngPtr, 8);
-	png_read_png(lPngPtr, lInfoPtr, PNG_TRANSFORM_EXPAND, 0);
+    /* open file and test for it being a png */
+    FILE *file = fopen(path, "rb");
+    fread(png_header, 1, 8, file);
+    if(png_sig_cmp((png_bytep)png_header, 0, 8))
+    {
+        LOGE("Not a PNG file...");
+        fclose(file);
+		return NULL;
+    }
+    /* initialise structures for reading a png file */
+    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    info_ptr = png_create_info_struct(png_ptr);
+    if (setjmp(png_jmpbuf(png_ptr)))
+    {
+        png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+        LOGE("ReadPngFile: Failed to read the PNG file");
+        fclose(file);
+		return NULL;
+    }
+    //I/O initialisation methods
+    png_init_io(png_ptr, file);
+    png_set_sig_bytes(png_ptr, 8);  //Required!!!
 
-	//mWidth = lInfoPtr->width;
 
-	png_int_32 lDepth, lColorType;
-	png_uint_32 lWidth, lHeight;
-	png_get_IHDR(lPngPtr, lInfoPtr, &lWidth, &lHeight,
-		&lDepth, &lColorType, NULL, NULL, NULL);
-	mWidth = lWidth; mHeight = lHeight;
-	// Creates a full alpha channel if transparency is encoded as
-	// an array of palette entries or a single transparent color.
-	lTransparency = false;
-	if (png_get_valid(lPngPtr, lInfoPtr, PNG_INFO_tRNS)) {
-		png_set_tRNS_to_alpha(lPngPtr);
-		lTransparency = true;
-		goto ERROR;
-	}
-	// Expands PNG with less than 8bits per channel to 8bits.
-	if (lDepth < 8) {
-		png_set_packing (lPngPtr);
-		// Shrinks PNG with 16bits per color channel down to 8bits.
-	} else if (lDepth == 16) {
-		png_set_strip_16(lPngPtr);
-	}
-	// Indicates that image needs conversion to RGBA if needed.
-		switch (lColorType) {
-		case PNG_COLOR_TYPE_PALETTE:
-			png_set_palette_to_rgb(lPngPtr);
-			mFormat = lTransparency ? GL_RGBA : GL_RGB;
-			break;
-		case PNG_COLOR_TYPE_RGB:
-			mFormat = lTransparency ? GL_RGBA : GL_RGB;
-			break;
-		case PNG_COLOR_TYPE_RGBA:
-			mFormat = GL_RGBA;
-			break;
-		case PNG_COLOR_TYPE_GRAY:
-			png_set_expand_gray_1_2_4_to_8(lPngPtr);
-			mFormat = lTransparency ? GL_LUMINANCE_ALPHA:GL_LUMINANCE;
-			break;
-		case PNG_COLOR_TYPE_GA:
-			png_set_expand_gray_1_2_4_to_8(lPngPtr);
-			mFormat = GL_LUMINANCE_ALPHA;
-			break;
-	}
-	png_read_update_info(lPngPtr, lInfoPtr);
-	lRowSize = png_get_rowbytes(lPngPtr, lInfoPtr);
-	if (lRowSize <= 0) goto ERROR;
-	lImageBuffer = new png_byte[lRowSize * lHeight];
-	if (!lImageBuffer) goto ERROR;
-	lRowPtrs = new png_bytep[lHeight];
-	if (!lRowPtrs) goto ERROR;
-	for (int32_t i = 0; i < lHeight; ++i) {
-		lRowPtrs[lHeight - (i + 1)] = lImageBuffer + i * lRowSize;
-	}
-	png_read_image(lPngPtr, lRowPtrs);
-	fclose(file);
-	png_destroy_read_struct(&lPngPtr, &lInfoPtr, NULL);
-	delete[] lRowPtrs;
-	return lImageBuffer;
+    /* **************************************************
+     * The high-level read interface in libpng (http://www.libpng.org/pub/png/libpng-1.2.5-manual.html)
+     * **************************************************
+     */
+       png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_EXPAND, 0);
+	   mWidth = png_get_image_width( png_ptr, info_ptr );  
+	   mHeight = png_get_image_height( png_ptr, info_ptr );
+	   mFormat = png_get_color_type( png_ptr, info_ptr );
+       unsigned char* rgba = new unsigned char[mWidth * mHeight * 4];  //each pixel(RGBA) has 4 bytes
+       png_bytep* row_pointers = png_get_rows(png_ptr, info_ptr);
+	   LOGI("%i \n", png_get_rowbytes(png_ptr, info_ptr));
 
-ERROR:
-/*	Log::error("Error while reading PNG file");*/
-	fclose(file);
-	delete[] lRowPtrs; delete[] lImageBuffer;
-	if (lPngPtr != NULL) {
-		png_infop* lInfoPtrP = lInfoPtr != NULL ? &lInfoPtr: NULL;
-		png_destroy_read_struct(&lPngPtr, lInfoPtrP, NULL);
-	}
-	return NULL;
+       //Original PNG pixel data stored from top-left corner, BUT OGLES Texture drawing is from bottom-left corner
+//        int pos = 0;
+//        for(int row = 0; row < mHeight; row++)
+//        {
+//            for(int col = 0; col < (4 * mWidth); col += 4)
+//            {
+//               rgba[pos++] = row_pointers[row][col];     // red
+//               rgba[pos++] = row_pointers[row][col + 1]; // green
+//               rgba[pos++] = row_pointers[row][col + 2]; // blue
+//               rgba[pos++] = row_pointers[row][col + 3]; // alpha
+//            }
+//        }
+
+
+       //unlike store the pixel data from top-left corner, store them from bottom-left corner for OGLES Texture drawing...
+       int pos = (mWidth * mHeight * 4) - (4 * mWidth);
+       for(int row = 0; row < mHeight; row++)
+       {
+          for(int col = 0; col < (4 * mWidth); col += 4)
+          {
+              rgba[pos++] = row_pointers[row][col];        // red
+              rgba[pos++] = row_pointers[row][col + 1]; // green
+              rgba[pos++] = row_pointers[row][col + 2]; // blue
+              rgba[pos++] = row_pointers[row][col + 3]; // alpha
+          }
+          pos=(pos - (mWidth * 4)*2); //move the pointer back two rows
+       }
+
+	   bool lTransparency = false;
+	   if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) {
+		   lTransparency = true;
+	   }
+
+	   switch (mFormat) {
+	   case PNG_COLOR_TYPE_PALETTE:
+		   mFormat = lTransparency ? GL_RGBA : GL_RGB;
+		   break;
+	   case PNG_COLOR_TYPE_RGB:
+		   mFormat = lTransparency ? GL_RGBA : GL_RGB;
+		   break;
+	   case PNG_COLOR_TYPE_RGBA:
+		   mFormat = GL_RGBA;
+		   break;
+	   case PNG_COLOR_TYPE_GRAY:
+		   mFormat = lTransparency ? GL_LUMINANCE_ALPHA:GL_LUMINANCE;
+		   break;
+	   case PNG_COLOR_TYPE_GA:
+		   mFormat = GL_LUMINANCE_ALPHA;
+		   break;
+	   }
+
+    //clean up after the read, and free any memory allocated
+    png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+    fclose(file);
+    return rgba;
 }
 
 void GraphicsTexture::callback_read(png_structp png, png_bytep data, png_size_t length) {
@@ -186,7 +208,7 @@ int GraphicsTexture::load() {
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	if (glGetError() != GL_NO_ERROR) {
-/*		Log::error("Error loading texture into OpenGL.");*/
+		LOGE("Error loading texture into OpenGL.");
 		unload();
 		return 0;
 	}
