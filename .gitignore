@@ -1,3 +1,5 @@
 GLESEngine.opensdf
 GLESEngine.sdf
 GLESEngine/Debug/
+!*.dll
+!*.lib
