@@ -16,6 +16,50 @@ void Draw ( ESContext *esContext )
 	eglSwapBuffers ( esContext->eglDisplay, esContext->eglSurface );
 }
 
+void doCut() {
+	RectangleTexture* tempTexture = cutRect->getCutTempTexture();
+	scene->addObj(tempTexture, 25);
+	RectangleTexture* finalTexture = cutRect->getCutFinalTexture();
+	cutRect->doCutAnimation(tempTexture, finalTexture);
+
+	scene->removeObj(backRectTexture);
+	scene->removeObj(upLayer);
+
+	backRectTexture = finalTexture;
+	upLayer = new RectangleTexture(0.0f, 0.0f, backRectTexture->getHalfW() * 2,
+		backRectTexture->getHalfH() * 2, "");
+
+	scene->addObj(upLayer, 20);
+	scene->addObj(backRectTexture, 10);
+	cutRect->setBackRect(backRectTexture, upLayer);
+
+	scene->removeObj(tempTexture);
+	if (tempTexture != NULL) {
+		delete tempTexture;
+		tempTexture = NULL;
+	}
+}
+
+void doReset() {
+	scene->removeObj(backRectTexture);
+	scene->removeObj(upLayer);
+	backRectTexture = new RectangleTexture("view1.png");
+	upLayer = new RectangleTexture(0.0f, 0.0f, backRectTexture->getHalfW() * 2,
+		backRectTexture->getHalfH() * 2, "");
+	scene->addObj(upLayer, 20);
+	scene->addObj(backRectTexture, 10);
+	cutRect->setBackRect(backRectTexture, upLayer, false);
+}
+
+void KeyFunc(ESContext *esContext, unsigned char wParam, int x, int y) {
+	std::cout<<"KeyFunc: "<<wParam<<std::endl;
+	if(wParam == 'a') {
+		doCut();
+	} else if(wParam == 'b') {
+		doReset();
+	}
+}
+
 int main() {
 	std::cout<<"a"<<std::endl;
 	
@@ -37,6 +81,8 @@ int main() {
 
 	scene->onSurfaceChanged(1024, 768);
 	scene->onSurfaceCreated();
+
+	esRegisterKeyFunc(&esContext, KeyFunc);
 
 	esRegisterDrawFunc(&esContext, Draw);
 	esMainLoop(&esContext);
