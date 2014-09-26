@@ -3,8 +3,12 @@
 #include "Scene.h"
 #include "Line.h"
 #include "RectangleTexture.h"
+#include "CutRectangle.h"
 
-Scene* scene = NULL;
+static Scene* scene = NULL;
+static CutRectangle* cutRect = NULL;
+static RectangleTexture* backRectTexture = NULL;
+static RectangleTexture* upLayer = NULL;
 
 void Draw ( ESContext *esContext )
 {
@@ -20,8 +24,16 @@ int main() {
 	esCreateWindow(&esContext, "hello", 1024, 768, ES_WINDOW_RGB);
 
 	scene = new Scene();
-	BaseObject* temp = new RectangleTexture("tou.png");
-	scene->addObj(temp);
+
+	backRectTexture = new RectangleTexture("view1.png");
+	upLayer = new RectangleTexture(0.0f, 0.0f,
+		backRectTexture->getHalfW() * 2, backRectTexture->getHalfH() * 2,
+		"");
+	cutRect = new CutRectangle(backRectTexture, upLayer);
+
+	scene->addObj(cutRect, 30);
+	scene->addObj(upLayer, 20);
+	scene->addObj(backRectTexture, 10);
 
 	scene->onSurfaceChanged(1024, 768);
 	scene->onSurfaceCreated();
