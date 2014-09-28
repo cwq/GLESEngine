@@ -132,9 +132,9 @@ void CutRectangle::doCutAnimation(RectangleTexture* tempTexture, RectangleTextur
 	bottomRight->setAnimation(MoveAnimation::move(ANIMATION_TIME, 
 		Point(bottomRight->getCenterX(), bottomRight->getCenterY()),
 		Point(finalTexture->getHalfW(), -finalTexture->getHalfH())));
-	while(backRectTexture->isRunAnimation()) {
-
-	}
+// 	while(backRectTexture->isRunAnimation()) {
+// 
+// 	}
 }
 
 float* CutRectangle::getUV() {
