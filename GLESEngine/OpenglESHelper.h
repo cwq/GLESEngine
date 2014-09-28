@@ -1,8 +1,7 @@
 #ifndef OPENGLESHELPER_H
 #define OPENGLESHELPER_H
 
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
+#include <gl/glew.h>
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -1,10 +1,10 @@
 #include <iostream>
-#define GLFW_INCLUDE_ES2
-#include <glfw3.h>
 #include "Scene.h"
 #include "Line.h"
 #include "RectangleTexture.h"
 #include "CutRectangle.h"
+//#include <gl/glew.h>
+#include <glfw3.h>
 
 static Scene* scene = NULL;
 static CutRectangle* cutRect = NULL;
@@ -47,8 +47,6 @@ void doReset() {
 }
 
 int main() {
-	std::cout<<"a"<<std::endl;
-	
 	GLFWwindow* window;
 	/* Initialize the library */
 	if(!glfwInit()) {
@@ -66,6 +64,13 @@ int main() {
 
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
+
+	/* in win32 to use opengl hight level must call glewInit */
+	GLenum err = glewInit();
+	if (GLEW_OK != err){
+		std::cout<<"GLEW Error: "<<glewGetErrorString(err)<<std::endl;
+		return -1;
+	}
 
 	scene = new Scene();
 	backRectTexture = new RectangleTexture("view1.png");

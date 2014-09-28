@@ -4,7 +4,7 @@
 #include "Resource.h"
 
 #include <stdint.h>
-#include <GLES2/gl2.h>
+#include <gl/glew.h>
 #include <png.h>
 
 typedef struct {
