@@ -5,21 +5,6 @@
 
 #include <stdint.h>
 #include <gl/glew.h>
-#include <png.h>
-
-typedef struct {
-	uint8_t* pixelData;
-	int imageWidth;
-	int imageHeight;
-}ImageInfo;
-
-
-
-typedef struct {
-	uint8_t* data;
-	int size;
-	int offset;
-}ImageSource;
 
 class GraphicsTexture
 {
@@ -39,7 +24,6 @@ protected:
 	uint8_t* loadImage();
 
 private:
-	static void callback_read(png_structp pStruct, png_bytep pData, png_size_t pSize);
 	const char* path;
 	GLuint mTextureId;
 	int32_t mWidth, mHeight;

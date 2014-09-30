@@ -9,6 +9,8 @@
 static const int WIDTH = 768;
 static const int HEIGHT = 1024;
 
+static std::string BACK_IMAGE = "view1.png";
+
 static Scene* scene = NULL;
 static CutRectangle* cutRect = NULL;
 static RectangleTexture* backRectTexture = NULL;
@@ -71,7 +73,7 @@ static void doCut() {
 static void doReset() {
 	scene->removeObj(backRectTexture);
 	scene->removeObj(upLayer);
-	backRectTexture = new RectangleTexture("view1.png");
+	backRectTexture = new RectangleTexture(BACK_IMAGE);
 	upLayer = new RectangleTexture(0.0f, 0.0f, backRectTexture->getHalfW() * 2,
 		backRectTexture->getHalfH() * 2, "");
 	scene->addObj(upLayer, 20);
@@ -172,7 +174,7 @@ int main() {
 	}
 
 	scene = new Scene();
-	backRectTexture = new RectangleTexture("view1.png");
+	backRectTexture = new RectangleTexture(BACK_IMAGE);
 	upLayer = new RectangleTexture(0.0f, 0.0f,
 		backRectTexture->getHalfW() * 2, backRectTexture->getHalfH() * 2,
 		"");
