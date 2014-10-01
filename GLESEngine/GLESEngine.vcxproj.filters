@@ -219,4 +219,7 @@
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="main.lua" />
+  </ItemGroup>
 </Project>

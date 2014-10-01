@@ -6,6 +6,13 @@
 //#include <gl/glew.h>
 #include <glfw3.h>
 
+extern "C"   
+{  
+	#include "lua.h"  
+	#include "lauxlib.h"  
+	#include "lualib.h"  
+}  
+
 static const int WIDTH = 768;
 static const int HEIGHT = 1024;
 
@@ -140,6 +147,12 @@ static void cursor_position_callback(GLFWwindow* window, double cx, double cy) {
 	}
 }
 
+static int addTexture(lua_State *L) {
+	std::string pic = lua_tostring(L, 1);
+	scene->addObj(new RectangleTexture(pic), 50);
+	return 0;
+}
+
 int main() {
 	GLFWwindow* window;
 
@@ -174,6 +187,12 @@ int main() {
 	}
 
 	scene = new Scene();
+
+	lua_State *L = luaL_newstate();
+	luaL_openlibs(L);
+	lua_register(L, "addTexture", addTexture);
+	luaL_dofile(L, "main.lua");
+
 	backRectTexture = new RectangleTexture(BACK_IMAGE);
 	upLayer = new RectangleTexture(0.0f, 0.0f,
 		backRectTexture->getHalfW() * 2, backRectTexture->getHalfH() * 2,
@@ -205,6 +224,8 @@ int main() {
 		/* Poll for and process events */
 		glfwPollEvents();
 	}
+
+	lua_close(L);
 	
 	glfwDestroyWindow(window);
 	glfwTerminate();

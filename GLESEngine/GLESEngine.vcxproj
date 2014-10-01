@@ -39,8 +39,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>E:\visual studio 2012\Projects\GLESEngine\GLESEngine;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>E:\visual studio 2012\Projects\GLESEngine\GLESEngine;E:\lua\lua-5.2.3\src;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\lua\lua-5.2.3;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -49,7 +49,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>pthreadVC2.lib;opengl32.lib;glew32.lib;glfw3.lib;DevIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>pthreadVC2.lib;opengl32.lib;glew32.lib;glfw3.lib;DevIL.lib;lualib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -135,6 +135,9 @@
     <ClInclude Include="ThreadLock.h" />
     <ClInclude Include="TintAnimation.h" />
     <ClInclude Include="TriangulatePolygon.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="main.lua" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
