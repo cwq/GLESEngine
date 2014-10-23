@@ -10,6 +10,7 @@ class BaseAnimation
 protected:
 	float sDuration;
 	bool isrevert;
+	bool isrepeat;
 
 public:
 	BaseAnimation(float duration);
@@ -28,6 +29,12 @@ public:
 	}
 	inline void setRevert(bool isRevert) {
 		isrevert = isRevert;
+	}
+	inline bool isRepeat() {
+		return isrepeat;
+	}
+	inline void setRepeat(bool repeat) {
+		isrepeat = repeat;
 	}
 };
 

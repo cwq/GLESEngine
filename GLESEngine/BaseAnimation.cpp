@@ -3,4 +3,5 @@
 BaseAnimation::BaseAnimation(float duration) {
 	sDuration = duration;
 	isrevert = false;
+	isrepeat = false;
 }
