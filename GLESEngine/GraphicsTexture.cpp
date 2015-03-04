@@ -6,6 +6,9 @@
 
 #include "LogHelper.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 GraphicsTexture::GraphicsTexture(const char* pPath)
 	: path(pPath), mTextureId(0),
 	mWidth(0), mHeight(0) {
@@ -49,6 +52,7 @@ bool GraphicsTexture::loadWidthHeight() {
 }
 
 uint8_t* GraphicsTexture::loadImage() {
+	/*
 	ILuint image = ilGenImage();
 	ilBindImage(image);
 	ilLoadImage(path);
@@ -77,6 +81,10 @@ uint8_t* GraphicsTexture::loadImage() {
 	memcpy(lImageBuffer, ilGetData(), imgSize);
 
 	ilDeleteImage(image);
+	*/
+
+	int n;
+	unsigned char* lImageBuffer = stbi_load(path, &mWidth, &mHeight, &n, 4);
 
 	return lImageBuffer;
 }
@@ -97,7 +105,8 @@ int GraphicsTexture::load() {
 	glTexImage2D(GL_TEXTURE_2D, 0, mFormat, mWidth, mHeight, 0,
 		mFormat, GL_UNSIGNED_BYTE, lImageBuffer);
 
-	delete[] lImageBuffer;
+	//delete[] lImageBuffer;
+	stbi_image_free(lImageBuffer);
 
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
