@@ -7,6 +7,7 @@
 #include "ComplexAnimation.h"
 #include "RotateAnimation.h"
 //#include <gl/glew.h>
+#define GLFW_INCLUDE_NONE
 #include <glfw3.h>
 
 static const int WIDTH = 768;
